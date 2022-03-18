@@ -69,6 +69,56 @@ class MergeSortTree{
         int right = query(2*i+1,mid+1,r,GivenL,GivenR,val);
         return left+right;
     }
+    int queryLarge(int i,int l,int r,int GivenL,int GivenR,int val){
+        if(l>GivenR || r<GivenL){  // it means the (l,r) is not intersecting with our given ranges
+            return 0;
+        }
+        if(l>=GivenL && r<=GivenR){ // it means it is totally coinciding wiht the give ranges 
+            int lo = 0;
+            int hi = seg[i].size();
+            int ind = seg[i].size(); // initially assuming that no element in seg[i] is greater than val that is why keep the ind as seg[i].size()
+            while(lo<hi){
+                int mid = (lo+hi)/2;
+                if(seg[i][mid]>val){
+                    hi = mid;
+                    ind = mid;
+                }
+                else{
+                    lo = mid+1;
+                }
+            }
+            return seg[i].size()-ind; // it will give me the number of elemets greater than val in vector seg[i]
+        }
+        int mid = (l+r)/2;
+        int left = queryLarge(2*i,l,mid,GivenL,GivenR,val);
+        int right = queryLarge(2*i+1,mid+1,r,GivenL,GivenR,val);
+        return left+right;
+    }
+    int querySmall(int i,int l,int r,int GivenL,int GivenR,int val){
+        if(l>GivenR || r<GivenL){  // it means the (l,r) is not intersecting with our given ranges
+            return 0;
+        }
+        if(l>=GivenL && r<=GivenR){ // it means it is totally coinciding wiht the give ranges 
+            int lo = 0;
+            int hi = seg[i].size();
+            int ind = -1; // initially assuming that no element in seg[i] is less than val that is why keep the ind as seg[i].size()
+            while(lo<hi){
+                int mid = (lo+hi)/2;
+                if(seg[i][mid]<val){
+                    lo = mid+1;
+                    ind = mid;
+                }
+                else{
+                    hi = mid;
+                }
+            }
+            return ind+1; // it will give me the number of elemets less than val in vector seg[i]
+        }
+        int mid = (l+r)/2;
+        int left = querySmall(2*i,l,mid,GivenL,GivenR,val);
+        int right = querySmall(2*i+1,mid+1,r,GivenL,GivenR,val);
+        return left+right;
+    }
 };
 int main(){
     int n;
